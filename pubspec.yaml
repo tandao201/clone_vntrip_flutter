@@ -29,6 +29,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations: # Add this line
+    sdk: flutter
   provider: ^6.0.3
   http: ^0.13.5
   shared_preferences: ^2.0.15
@@ -39,7 +41,7 @@ dependencies:
   numberpicker: ^2.1.1
   shimmer: ^2.0.0
   google_maps_flutter: ^2.1.12
-  flutter_html: ^2.2.1
+  flutter_html: ^3.0.0-alpha.3
   url_launcher: ^6.1.5
   webview_flutter: ^2.0.4
   translator: ^0.1.7
@@ -72,6 +74,7 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  generate: true
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
@@ -103,3 +106,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_intl:
+  enabled: true

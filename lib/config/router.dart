@@ -28,7 +28,6 @@ class RouteConfig {
   static Route onGenerateRoute(RouteSettings settings) {
 
     switch (settings.name) {
-
       case Splash.routeName:
         return MaterialPageRoute(builder: (context) => Splash());
       case Home.routeName:

@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../components/currency.dart';
 import '../../components/time.dart';
+import '../../generated/l10n.dart';
 import '../../models/hotel/responses/response_searched_hotel.dart';
 import '../../providers/hotel_providers/date_pick_provider.dart';
 import '../../providers/hotel_providers/detail_hotel_providers.dart';
@@ -236,7 +237,7 @@ class SearchedRoom extends StatelessWidget {
                                     visible: searchProv.sortBy.isNotEmpty,
                                     child: const Icon(Icons.check, color: Colors.orange,)),
                                 Text(
-                                  'Sắp xếp',
+                                  S.of(context).sort,
                                   style: TextStyle(
                                       color: searchProv.sortBy.isEmpty
                                           ? Colors.black
@@ -271,7 +272,7 @@ class SearchedRoom extends StatelessWidget {
                                       color: Colors.orange,
                                     )),
                                 Text(
-                                  'Lọc',
+                                  S.of(context).filter,
                                   style: TextStyle(
                                       color: !searchProv.isSort
                                           ? Colors.black
@@ -295,8 +296,8 @@ class SearchedRoom extends StatelessWidget {
                                     right: BorderSide(
                                         color: AppColor.grayLight, width: 1))),
                             padding: const EdgeInsets.all(12),
-                            child: const Center(
-                              child: Text('Bản đồ'),
+                            child:  Center(
+                              child: Text(S.of(context).map),
                             ),
                           ),
                         ),

@@ -7,6 +7,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../components/time.dart';
 import '../../components/colors.dart';
+import '../../generated/l10n.dart';
 import '../../providers/hotel_providers/date_pick_provider.dart';
 import '../../providers/ticket_providers/ticket_booking_provider.dart';
 import 'package:clone_vntrip/models/ticket/people.dart';
@@ -125,8 +126,8 @@ class TicketBooking extends StatelessWidget {
                                 ),
                                 Container(
                                   padding: const EdgeInsets.only(left: 10),
-                                  child: const Text(
-                                    'Đặt vé máy bay',
+                                  child: Text(
+                                    S.of(context).titleTicketBooking,
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 20,
@@ -206,9 +207,9 @@ class TicketBooking extends StatelessWidget {
                                                       padding:
                                                       const EdgeInsets.only(
                                                           bottom: 10),
-                                                      child: const Text(
-                                                        'Điểm đi',
-                                                        style: TextStyle(
+                                                      child:  Text(
+                                                        S.of(context).sourcePlace,
+                                                        style: const TextStyle(
                                                             fontSize: 13,
                                                             color: Colors.grey),
                                                       ),
@@ -260,9 +261,9 @@ class TicketBooking extends StatelessWidget {
                                                         padding:
                                                         const EdgeInsets.only(
                                                             bottom: 10),
-                                                        child: const Text(
-                                                          'Điểm đến',
-                                                          style: TextStyle(
+                                                        child:  Text(
+                                                          S.of(context).destinationPlace,
+                                                          style: const TextStyle(
                                                               fontSize: 13,
                                                               color: Colors.grey),
                                                         )),
@@ -321,7 +322,7 @@ class TicketBooking extends StatelessWidget {
                                                     const EdgeInsets.fromLTRB(
                                                         0, 10, 0, 10),
                                                     child: Text(
-                                                      'Ngày đi',
+                                                      S.of(context).startDate,
                                                       style: TextStyle(
                                                           color:
                                                           AppColor.grayText,
@@ -358,7 +359,7 @@ class TicketBooking extends StatelessWidget {
                                                     const EdgeInsets.fromLTRB(
                                                         0, 10, 0, 5),
                                                     child: Text(
-                                                      'Khứ hồi',
+                                                      S.of(context).returnFlight,
                                                       style: TextStyle(
                                                           color:
                                                           AppColor.grayText,
@@ -423,7 +424,7 @@ class TicketBooking extends StatelessWidget {
                                                     const EdgeInsets.fromLTRB(
                                                         0, 10, 0, 10),
                                                     child: Text(
-                                                      'Ngày về',
+                                                      S.of(context).endDate,
                                                       style: TextStyle(
                                                           color:
                                                           AppColor.grayText,
@@ -482,7 +483,7 @@ class TicketBooking extends StatelessWidget {
                                             margin: const EdgeInsets.fromLTRB(
                                                 0, 10, 0, 10),
                                             child: Text(
-                                              'Số hành khách',
+                                              S.of(context).passengers,
                                               style: TextStyle(
                                                   color: AppColor.grayText,
                                                   fontSize: 15),
@@ -531,7 +532,7 @@ class TicketBooking extends StatelessWidget {
                                                   Navigator.pushNamed(context, SearchedFlightTicket.routeName);
                                                 }
                                               },
-                                              child: const Text('Tìm kiếm'),
+                                              child: Text(S.of(context).search),
                                             ),
                                           );
                                         },
@@ -552,9 +553,9 @@ class TicketBooking extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Ưu đãi suốt tuần',
-                        style: TextStyle(
+                       Text(
+                        S.of(context).endowWeek,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       Container(
@@ -591,9 +592,9 @@ class TicketBooking extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Điểm đến hàng đầu',
-                        style: TextStyle(
+                       Text(
+                        S.of(context).hotPlace,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       SizedBox(

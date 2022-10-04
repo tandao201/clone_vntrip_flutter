@@ -1,3 +1,4 @@
+
 import 'package:clone_vntrip/screens/hotel/searched_rooms.dart';
 import 'package:clone_vntrip/screens/hotel/suggestPlace.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../components/time.dart';
 import '../../components/colors.dart';
+import '../../generated/l10n.dart';
 import '../../providers/hotel_providers/date_pick_provider.dart';
 import '../../providers/hotel_providers/searcherHotelProvider.dart';
 import '../../providers/hotel_providers/suggest_place_provider.dart';
@@ -38,7 +40,7 @@ class HotelBooking extends StatelessWidget {
     }
 
     void selectPlace() {
-      print('suggest place');
+      debugPrint('suggest place');
       Navigator.pushNamed(context, SuggestPlace.routeName);
     }
 
@@ -74,13 +76,11 @@ class HotelBooking extends StatelessWidget {
     return Scaffold(
       body: ListView(
         children: [
-          Container(
+          SizedBox(
             height: heightScreen / 1.8,
             child: Stack(
               children: [
-                Container(
-                  child: Image.asset("assets/images/hotel_banner.png"),
-                ), // banner bg
+                Image.asset("assets/images/hotel_banner.png"), // banner bg
                 Container(
                   padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
                   child: Row(
@@ -100,10 +100,11 @@ class HotelBooking extends StatelessWidget {
                               ),
                               Container(
                                 padding: const EdgeInsets.only(left: 10),
-                                child: const Text('Đặt phòng', style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),),
+                                child:  Text(S.of(context).titleRoomBooking,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),),
                               ),
                             ],
                           )),
@@ -164,7 +165,7 @@ class HotelBooking extends StatelessWidget {
                                     Container(
                                       margin: const EdgeInsets.fromLTRB(
                                           0, 7, 0, 10),
-                                      child: Text('Tìm kiếm hơn 11.000 khách sạn',
+                                      child: Text(S.of(context).titlePlaceHotel,
                                         style: TextStyle(color: AppColor.grayText,
                                             fontSize: 15),),
                                     ),
@@ -207,7 +208,7 @@ class HotelBooking extends StatelessWidget {
                                     Container(
                                       margin: const EdgeInsets.fromLTRB(
                                           0, 10, 0, 10),
-                                      child: Text('Nhận phòng', style: TextStyle(
+                                      child: Text(S.of(context).checkInHotel, style: TextStyle(
                                           color: AppColor.grayText,
                                           fontSize: 15),),
                                     ),
@@ -248,7 +249,7 @@ class HotelBooking extends StatelessWidget {
                                     Container(
                                       margin: const EdgeInsets.fromLTRB(
                                           0, 10, 0, 10),
-                                      child: Text('Trả phòng', style: TextStyle(
+                                      child: Text(S.of(context).checkOutHotel, style: TextStyle(
                                           color: AppColor.grayText, fontSize: 15),),
                                     ),
                                     Consumer<PickDateProvider>(
@@ -291,7 +292,7 @@ class HotelBooking extends StatelessWidget {
                                     onPressed: () {
                                       clickBtnSearchRoom();
                                     },
-                                    child: const Text('Tìm kiếm'),
+                                    child: Text(S.of(context).search),
 
                                   ),
                                 ),
@@ -311,8 +312,9 @@ class HotelBooking extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Ưu đãi suốt tuần', style: TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 16),),
+                Text(S.of(context).endowWeek,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16),),
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8)),
@@ -343,7 +345,7 @@ class HotelBooking extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Điểm đến hàng đầu', style: TextStyle(
+                Text(S.of(context).hotPlace, style: const TextStyle(
                     fontWeight: FontWeight.bold, fontSize: 16),),
                 SizedBox(
 
@@ -460,7 +462,7 @@ class HotelBooking extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      )
     );
   }
 

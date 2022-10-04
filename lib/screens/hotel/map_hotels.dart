@@ -1,19 +1,14 @@
 import 'dart:async';
-
 import 'package:clone_vntrip/models/hotel/requests/request_search_room.dart';
-import 'package:clone_vntrip/models/hotel/responses/response_suggest.dart';
 import 'package:clone_vntrip/providers/hotel_providers/searcherHotelProvider.dart';
 import 'package:clone_vntrip/providers/hotel_providers/suggest_place_provider.dart';
 import 'package:clone_vntrip/screens/hotel/filter_hotels_searched.dart';
 import 'package:clone_vntrip/screens/hotel/searched_rooms.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-
 import '../../components/currency.dart';
 import '../../components/time.dart';
 import '../../components/colors.dart';
@@ -137,6 +132,38 @@ class MapHotels extends StatelessWidget {
       Navigator.pop(context);
     }
 
+    bool fits(LatLngBounds fitBounds, LatLngBounds screenBounds) {
+      final bool northEastLatitudeCheck = screenBounds.northeast.latitude >= fitBounds.northeast.latitude;
+      final bool northEastLongitudeCheck = screenBounds.northeast.longitude >= fitBounds.northeast.longitude;
+      final bool southWestLatitudeCheck = screenBounds.southwest.latitude <= fitBounds.southwest.latitude;
+      final bool southWestLongitudeCheck = screenBounds.southwest.longitude <= fitBounds.southwest.longitude;
+      return northEastLatitudeCheck && northEastLongitudeCheck && southWestLatitudeCheck && southWestLongitudeCheck;
+    }
+
+    Future<void> zoomToFit(GoogleMapController controller, LatLngBounds bounds, LatLng centerBounds) async {
+      bool keepZoomingOut = true;
+      while(keepZoomingOut) {
+        final LatLngBounds screenBounds = await controller.getVisibleRegion();
+        if(fits(bounds, screenBounds)){
+          keepZoomingOut = false;
+          final double zoomLevel = await controller.getZoomLevel() - 0.5;
+          controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
+            target: centerBounds,
+            zoom: zoomLevel,
+          )));
+          break;
+        }
+        else {
+          // Zooming out by 0.1 zoom level per iteration
+          final double zoomLevel = await controller.getZoomLevel() - 0.1;
+          controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
+            target: centerBounds,
+            zoom: zoomLevel,
+          )));
+        }
+      }
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Consumer<SearchedHotelProvider>(
@@ -180,6 +207,20 @@ class MapHotels extends StatelessWidget {
                             onMapCreated: (mapController) async {
                               ggMapCtl = mapController;
                               await get2CornerLatLng();
+                              LatLngBounds bounds = LatLngBounds(
+                                  southwest: LatLng(searchProv.hotels[0].location!.lat!,searchProv.hotels[0].location!.lon!),
+                                  northeast: LatLng(currentPos!.latitude, currentPos.longitude)
+                              );
+                              LatLng centerBounds = LatLng(
+                                  (bounds.northeast.latitude + bounds.southwest.latitude)/2,
+                                  (bounds.northeast.longitude + bounds.southwest.longitude)/2
+                              );
+
+                              ggMapCtl?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+                                target: centerBounds,
+                                zoom: 19,
+                              )));
+                              zoomToFit(ggMapCtl!, bounds, centerBounds);
                             },
                           ),
                         ),
@@ -217,6 +258,8 @@ class MapHotels extends StatelessWidget {
                               GestureDetector(
                                 onTap: () {
                                   ggMapCtl!.animateCamera(CameraUpdate.newLatLng(LatLng(currentPos!.latitude, currentPos.longitude)));
+
+                                  // ggMapCtl?.getVisibleRegion();
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.only(right: 10),

@@ -34,7 +34,7 @@ class Time {
     var formatter = DateFormat('dd/MM/yyyy');
     String formattedDayOfWeek = DateFormat('EEEE').format(time);
     String formattedDate = formatter.format(time);
-    return '${dayEnToVi[formattedDayOfWeek]} - $formattedDate';
+    return '$formattedDayOfWeek - $formattedDate';
   }
 
   static String formatTimeFromString(String date) {

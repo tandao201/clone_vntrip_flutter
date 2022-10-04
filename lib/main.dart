@@ -13,11 +13,13 @@ import 'package:clone_vntrip/providers/validation_provider.dart';
 import 'package:clone_vntrip/screens/splash.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'components/colors.dart';
 import 'config/router.dart';
+import 'generated/l10n.dart';
 
 void main() {
   if (defaultTargetPlatform == TargetPlatform.android) {
@@ -53,14 +55,29 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PaymentProvider()),
         ChangeNotifierProvider(create: (context) => PaymentBookingTicket()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-            primaryColor: AppColor.orangeMain,
-            textTheme: const TextTheme(bodyText2: TextStyle(fontSize: 13))),
-        initialRoute: Splash.routeName,
-        onGenerateRoute: (route) => RouteConfig.onGenerateRoute(route),
+      child: Consumer<HomeProvider>(
+        builder: (context, homeProv, child){
+          if (homeProv.mainLocale == null){
+            homeProv.fetchLocale();
+          }
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Vntrip',
+            theme: ThemeData(
+                primaryColor: AppColor.orangeMain,
+                textTheme: const TextTheme(bodyText2: TextStyle(fontSize: 13))),
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            locale: homeProv.mainLocale,
+            initialRoute: Splash.routeName,
+            onGenerateRoute: (route) => RouteConfig.onGenerateRoute(route),
+          );
+        },
       ),
     );
   }

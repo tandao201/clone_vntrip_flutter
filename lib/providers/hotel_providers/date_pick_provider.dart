@@ -11,7 +11,7 @@ class PickDateProvider with ChangeNotifier {
       DateTime today = DateTime.now();
       DateTime tomorrow = DateTime(today.year,today.month,today.day+1);
       dateRange = DateTimeRange(start: today, end: tomorrow);
-      notifyListeners();
+      // notifyListeners();
     }
   }
 

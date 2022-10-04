@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../generated/l10n.dart';
 import '../providers/home_provider.dart';
 import 'combo.dart';
 import 'hotel/hotel.dart';
@@ -16,9 +17,11 @@ import 'login.dart';
 class Home extends StatelessWidget {
   static const routeName = '/home';
 
+  const Home({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     final widthScreen = MediaQuery.of(context).size.width;
     final heightScreen = MediaQuery.of(context).size.height;
@@ -35,9 +38,14 @@ class Home extends StatelessWidget {
       accessToken == null ? const Login() : Profile()
     ];
 
+    if (homeProv.mainLocale == null){
+      homeProv.fetchLocale();
+    }
+
+
     // TODO: implement build
     return Scaffold(
-      key: _scaffoldKey,
+      key: scaffoldKey,
       drawer: NavBar(),
       body: SafeArea(
         child: PageView(
@@ -46,7 +54,6 @@ class Home extends StatelessWidget {
           controller: controller,
           onPageChanged: (int num) {
             // homeProv.changeHomePage(num);
-            print('Page index: $num');
           },
           children: widgets,
         ),
@@ -74,29 +81,28 @@ class Home extends StatelessWidget {
             duration: const Duration(milliseconds: 700),
             tabBackgroundColor: Colors.orangeAccent,
             color: Colors.grey,
-            tabs: const [
+            tabs:  [
               GButton(
                 icon: Icons.home,
-                text: 'Trang chủ',
+                text: S.of(context).homePage,
               ),
               GButton(
                 icon: Icons.location_city,
-                text: 'Khách sạn',
+                text: S.of(context).hotel,
               ),
               GButton(
                 icon: Icons.airplane_ticket_outlined,
-                text: 'Vé máy bay',
+                text: S.of(context).ticket,
               ),
               GButton(
                 icon: Icons.account_circle_outlined,
-                text: 'Tài khoản',
+                text: S.of(context).account,
               ),
             ],
             selectedIndex: 0,
             onTabChange: (index) {
               // homeProv.changeHomePage(index);
               controller.animateToPage(index, duration: const Duration(milliseconds: 700), curve: Curves.easeInOut);
-              print('Navbar index: $index');
             },
           ),
         ),
@@ -105,13 +111,14 @@ class Home extends StatelessWidget {
   }
 
   Widget homeItem(double widthScreen , double heightScreen, BuildContext context) {
+    final homeProv = Provider.of<HomeProvider>(context);
+    
     void _launchURL(String url) async {
       await launchUrl(Uri.parse(url));
     }
 
     onTapToMemuItem(String s) {
       Navigator.pushNamed(context, s);
-      print("Home: $s");
     }
 
     return ListView(
@@ -120,9 +127,7 @@ class Home extends StatelessWidget {
           height: heightScreen / 2.1,
           child: Stack(
             children: [
-              Container(
-                child: Image.asset("assets/images/banner_home.jpg"),
-              ), // banner bg
+              Image.asset("assets/images/banner_home.jpg"), // banner bg
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: Row(
@@ -147,6 +152,25 @@ class Home extends StatelessWidget {
                             ),
                           ],
                         )),
+                    GestureDetector(
+                      onTap: () {
+                        homeProv.changeLocale();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 5),
+                        margin: const EdgeInsets.only(right: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5)
+                        ),
+                        child: Text(
+                          homeProv.mainLocale?.languageCode == "vi"
+                              ? "Tiếng Việt"
+                              : "English",
+                          style: const TextStyle(color: Colors.orange, fontSize: 10),
+                        ),
+                      ),
+                    ),
                     GestureDetector(
                       onTap: () {
                         _launchURL("tel://0963266688");
@@ -189,209 +213,216 @@ class Home extends StatelessWidget {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           color: Colors.white),
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.fromLTRB(40, 10, 20, 10),
                       child: Column(
                         children: [
                           Expanded(
                             flex: 1,
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceAround,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      onTapToMemuItem(
-                                          HotelBooking.routeName);
-                                    },
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 35,
-                                            height: 35,
-                                            child: Image.asset(
-                                                'assets/images/hotel.png'),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 9),
-                                            child: const Text(
-                                              'Khách sạn',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight:
-                                                  FontWeight.bold),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceAround,
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        onTapToMemuItem(
+                                            HotelBooking.routeName);
+                                      },
+                                      child: Container(
+                                        color: Colors.white,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 35,
+                                              height: 35,
+                                              child: Image.asset(
+                                                  'assets/images/hotel.png'),
                                             ),
-                                          )
-                                        ],
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 9),
+                                              child:  Text(
+                                                S.of(context).hotel,
+                                                style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      onTapToMemuItem(
-                                          TicketBooking.routeName);
-                                    },
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 35,
-                                            height: 35,
-                                            child: Image.asset(
-                                                'assets/images/plane_ticket.png'),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 9),
-                                            child: const Text(
-                                              'Vé máy bay',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight:
-                                                  FontWeight.bold),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        onTapToMemuItem(
+                                            TicketBooking.routeName);
+                                      },
+                                      child: Container(
+                                        color: Colors.white,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 35,
+                                              height: 35,
+                                              child: Image.asset(
+                                                  'assets/images/plane_ticket.png'),
                                             ),
-                                          )
-                                        ],
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 9),
+                                              child: Text(
+                                                S.of(context).ticket,
+                                                style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                           Expanded(
                             flex: 1,
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceAround,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      onTapToMemuItem(Combo.routeName);
-                                    },
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: 35,
-                                            height: 35,
-                                            child: Image.asset(
-                                                'assets/images/combo.png'),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 9),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                const Text(
-                                                  'Combo\nphòng vé',
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                      FontWeight.bold),
-                                                ),
-                                                Container(
-                                                  padding:
-                                                  const EdgeInsets.only(
-                                                      top: 7),
-                                                  child: Text(
-                                                    '3N2Đ-2.299k',
-                                                    style: TextStyle(
-                                                        color: AppColor
-                                                            .grayHintText,
-                                                        fontSize: 11,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold),
-                                                  ),
-                                                )
-                                              ],
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        onTapToMemuItem(Combo.routeName);
+                                      },
+                                      child: Container(
+                                        color: Colors.white,
+                                        child: Row(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              width: 35,
+                                              height: 35,
+                                              child: Image.asset(
+                                                  'assets/images/combo.png'),
                                             ),
-                                          )
-                                        ],
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 9),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    S.of(context).combo,
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                        FontWeight.bold),
+                                                  ),
+                                                  Container(
+                                                    padding:
+                                                    const EdgeInsets.only(
+                                                        top: 7),
+                                                    child: Text(
+                                                      '3N2Đ-2.299k',
+                                                      style: TextStyle(
+                                                          color: AppColor
+                                                              .grayHintText,
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .bold),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      onTapToMemuItem(QuickStay.routeName);
-                                    },
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 35,
-                                            height: 35,
-                                            child: Image.asset(
-                                                'assets/images/quick_play.png'),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 9),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                const Text(
-                                                  'Quickstay',
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                      FontWeight.bold),
-                                                ),
-                                                Container(
-                                                  padding:
-                                                  const EdgeInsets.only(
-                                                      top: 7),
-                                                  child: Text(
-                                                    'Nghỉ theo giờ',
-                                                    style: TextStyle(
-                                                        color: AppColor
-                                                            .grayHintText,
-                                                        fontSize: 11,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold),
-                                                  ),
-                                                )
-                                              ],
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        onTapToMemuItem(QuickStay.routeName);
+                                      },
+                                      child: Container(
+                                        color: Colors.white,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 35,
+                                              height: 35,
+                                              child: Image.asset(
+                                                  'assets/images/quick_play.png'),
                                             ),
-                                          )
-                                        ],
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 9),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    S.of(context).quick_stay,
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                        FontWeight.bold),
+                                                  ),
+                                                  Container(
+                                                    padding:
+                                                    const EdgeInsets.only(
+                                                        top: 7),
+                                                    child: Text(
+                                                      S.of(context).relaxByHours,
+                                                      style: TextStyle(
+                                                          color: AppColor
+                                                              .grayHintText,
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .bold),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           )
                         ],
@@ -408,12 +439,9 @@ class Home extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                child: const Text(
-                  'Ưu đãi suốt tuần',
-                  style:
-                  TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
+              Text(
+                S.of(context).endowWeek,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               Container(
                 decoration:
@@ -449,14 +477,11 @@ class Home extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                child: const Text(
-                  'Điểm đến hàng đầu',
-                  style:
-                  TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
+              Text(
+                S.of(context).hotPlace,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              Container(
+              SizedBox(
                 height: heightScreen / 3,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
@@ -511,7 +536,7 @@ class Home extends StatelessWidget {
                       margin: const EdgeInsets.fromLTRB(0, 10, 10, 10),
                       child: Stack(
                         children: [
-                          Container(
+                          SizedBox(
                               height: heightScreen / 3,
                               child: Image.asset(
                                 'assets/images/da_nang.jpg',
@@ -552,7 +577,7 @@ class Home extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(0, 10, 5, 10),
                       child: Stack(
                         children: [
-                          Container(
+                          SizedBox(
                               height: heightScreen / 3,
                               child: Image.asset(
                                 'assets/images/hoian.jpg',

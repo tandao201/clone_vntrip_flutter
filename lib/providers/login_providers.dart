@@ -93,7 +93,7 @@ class LoginProvider with ChangeNotifier {
 
   Future<void> initSplash() async {
     print('Init splash...');
-    Future.delayed(const Duration(seconds: 2));
+    // Future.delayed(const Duration(seconds: 2));
     if (authToken==null){
       await getAuthToken();
       return ;
@@ -159,5 +159,9 @@ class LoginProvider with ChangeNotifier {
     } catch (exception) {
       print('Exception call loyalties Api: ${exception.toString()}');
     }
+  }
+
+  void changeScreen(BuildContext context) {
+
   }
 }

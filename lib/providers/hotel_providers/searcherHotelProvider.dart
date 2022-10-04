@@ -37,6 +37,7 @@ class SearchedHotelProvider with ChangeNotifier {
   List<String>? dataStayType;
   List<String>? dataService;
   List<String> tmp = <String>[];
+
   void resetData() {
     print('Reset data...');
     hotels.clear();
@@ -281,6 +282,7 @@ class SearchedHotelProvider with ChangeNotifier {
 
     return '${Currency.displayPriceFormat(firstValue)} - ${Currency.displayPriceFormat(secondValue)}';
   }
+
   static double convertRadiusToSigma(double radius) {
     return radius * 0.57735 + 0.5;
   }
